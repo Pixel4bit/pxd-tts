@@ -1,8 +1,8 @@
 import os
 
-os.system('pip install --upgrade pip; ')
-os.system('pip install -q kokoro>=0.9.2 soundfile;')
-os.system('apt-get -qq -y install espeak-ng > /dev/null 2>&1')
+# os.system('pip install --upgrade pip;')
+# os.system('pip install -q kokoro>=0.9.2 soundfile;')
+# os.system('apt-get -qq -y install espeak-ng > /dev/null 2>&1')
 
 import streamlit as st
 from kokoro import KModel, KPipeline
@@ -84,6 +84,8 @@ st.session_state.input_text = st.text_area(
     height=200,
     key="main_text_input"
 )
+
+st.info('Untuk saat ini bahasa yang tersedia hanya American English dan British')
 
 col1, col2, col3 = st.columns(3)
 with col1:
