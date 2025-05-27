@@ -31,11 +31,11 @@ def load_pipelines():
 pipelines = load_pipelines()
 
 CHOICES = {
-    '🇺🇸 🚺 Heart ❤️': 'af_heart',
-    '🇺🇸 🚺 Bella 🔥': 'af_bella',
-    '🇺🇸 🚹 Michael': 'am_michael',
-    '🇬🇧 🚺 Emma': 'bf_emma',
-    '🇬🇧 🚹 George': 'bm_george',
+    '🇺🇸 🚺 Yola ❤️': 'af_heart',
+    '🇺🇸 🚺 Yanti 🔥': 'af_bella',
+    '🇺🇸 🚹 Yanto': 'am_michael',
+    '🇬🇧 🚺 Juni': 'bf_emma',
+    '🇬🇧 🚹 Jono': 'bm_george',
 }
 
 for v in CHOICES.values():
@@ -46,12 +46,30 @@ def generate_audio(text, voice, speed=1.0, use_gpu=False):
     pipeline = pipelines[voice[0]]
     pack = pipeline.load_voice(voice)
     use_gpu = use_gpu and CUDA_AVAILABLE
+    
+    # --- START OF MODIFIED CODE ---
+    all_audio_tensors = []  # List to store audio chunks (as torch tensors)
+    all_tokens = []       # List to store all tokens (phonemes)
+    sample_rate = 24000     # Kokoro produces audio at 24kHz
+
+    # Iterate through the pipeline generator to get all chunks
     for _, ps, _ in pipeline(text, voice, speed):
         ref_s = pack[len(ps)-1]
         model = models[True] if use_gpu else models[False]
-        audio = model(ps, ref_s, speed)
-        return 24000, audio.numpy(), ps
-    return None, None, ''
+        audio_tensor = model(ps, ref_s, speed) # Audio as torch.Tensor
+        all_audio_tensors.append(audio_tensor)
+        all_tokens.extend(ps) # Add phonemes to the total list
+
+    # If no audio was generated
+    if not all_audio_tensors:
+        return None, None, []
+
+    # Concatenate all audio chunks into one large tensor
+    final_audio_tensor = torch.cat(all_audio_tensors, dim=0)
+    final_audio_numpy = final_audio_tensor.numpy() # Convert to numpy array for soundfile
+
+    return sample_rate, final_audio_numpy, all_tokens
+    # --- END OF MODIFIED CODE ---
 
 @st.cache_data
 def get_kokoro_text():
@@ -75,7 +93,7 @@ if 'audio_file_path' not in st.session_state:
 if 'audio_tokens' not in st.session_state:
     st.session_state.audio_tokens = []
 
-st.title("🎤 Kokoro A.I Text-to-Speech")
+st.title("🎤 A.I powered Text-to-Speech")
 
 st.session_state.input_text = st.text_area(
     "Input Text",
