@@ -1,4 +1,4 @@
-# 🎤 AI-Powered Text-to-Speech with Kokoro A.I
+# 🎤 AI-Powered Text-to-Speech
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://pxd-tts.streamlit.app/)
 
@@ -20,7 +20,7 @@ To run this application on your local machine, follow these steps:
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/Pixel4bit/pxd-tts.git](https://github.com/Pixel4bit/pxd-tts.git)
+    git clone https://github.com/Pixel4bit/pxd-tts.git
     cd YOUR_REPO_NAME
     ```
 
