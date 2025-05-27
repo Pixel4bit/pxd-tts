@@ -71,6 +71,10 @@ def get_tts_text():
 
 if 'input_text' not in st.session_state:
     st.session_state.input_text = ""
+if 'audio_file_path' not in st.session_state:
+    st.session_state.audio_file_path = None
+if 'audio_tokens' not in st.session_state:
+    st.session_state.audio_tokens = []
 
 st.title("🎤 Kokoro A.I Text-to-Speech")
 
@@ -85,27 +89,45 @@ col1, col2, col3 = st.columns(3)
 with col1:
     if st.button("📙 Kokoro A.I", use_container_width=True):
         st.session_state.input_text = get_kokoro_text()
+        st.session_state.audio_file_path = None
+        st.session_state.audio_tokens = []
 with col2:
     if st.button("📕 Natural Language Processing (NLP)", use_container_width=True):
         st.session_state.input_text = get_nlp_text()
+        st.session_state.audio_file_path = None
+        st.session_state.audio_tokens = []
 with col3:
     if st.button("📗 Text-to-Speech", use_container_width=True):
         st.session_state.input_text = get_tts_text()
+        st.session_state.audio_file_path = None
+        st.session_state.audio_tokens = []
 
 voice_key = st.selectbox("Pilih Voice", options=list(CHOICES.keys()), index=0)
 voice = CHOICES[voice_key]
 speed = st.slider("Speed", 0.5, 2.0, 1.0, 0.1)
 use_gpu = st.checkbox("Gunakan GPU (jika tersedia)", value=CUDA_AVAILABLE and True)
 
-if st.button("🔊 Hasilkan Suara"):
+if st.button("🔊 Hasilkan Suara", use_container_width=True):
+    st.session_state.audio_file_path = None
+    st.session_state.audio_tokens = []
     with st.spinner("Menghasilkan suara..."):
         sr, audio, tokens = generate_audio(st.session_state.input_text, voice, speed, use_gpu)
         if audio is not None:
             with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
                 sf.write(f.name, audio, sr)
-                st.audio(f.name, format="audio/wav")
-                st.download_button("💾 Download", open(f.name, 'rb'), file_name="output.wav", mime="audio/wav")
-            st.markdown("**Token (phonemes):**")
-            st.code(' '.join(tokens))
+                st.session_state.audio_file_path = f.name
+                st.session_state.audio_tokens = tokens
         else:
             st.error("Gagal menghasilkan audio.")
+
+if st.session_state.audio_file_path:
+    st.audio(st.session_state.audio_file_path, format="audio/wav")
+    st.download_button(
+        "💾 Download",
+        open(st.session_state.audio_file_path, 'rb'),
+        file_name="output.wav",
+        mime="audio/wav",
+        key="download_audio_button"
+    )
+    st.markdown("**Token (phonemes):**")
+    st.code(' '.join(st.session_state.audio_tokens))
