@@ -1,8 +1,13 @@
+import os
 import streamlit as st
 from kokoro import KModel, KPipeline
 import torch
 import soundfile as sf
 import tempfile
+
+os.system('pip install --upgrade pip;')
+os.system('pip install -q kokoro>=0.9.2 soundfile;')
+os.system('apt-get -qq -y install espeak-ng > /dev/null 2>&1')
 
 CHAR_LIMIT = 5000
 CUDA_AVAILABLE = torch.cuda.is_available()
