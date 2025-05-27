@@ -9,7 +9,6 @@ from kokoro import KModel, KPipeline
 import torch
 import soundfile as sf
 import tempfile
-import random
 
 CHAR_LIMIT = 5000
 CUDA_AVAILABLE = torch.cuda.is_available()
@@ -82,14 +81,16 @@ st.session_state.input_text = st.text_area(
     key="main_text_input"
 )
 
-if st.button("📙 Kokoro A.I"):
-    st.session_state.input_text = get_kokoro_text()
-
-if st.button("📕 Natural Language Processing (NLP)"):
-    st.session_state.input_text = get_nlp_text()
-
-if st.button("📗 Text-to-Speech"):
-    st.session_state.input_text = get_tts_text()
+col1, col2, col3 = st.columns(3)
+with col1:
+    if st.button("📙 Kokoro A.I", use_container_width=True):
+        st.session_state.input_text = get_kokoro_text()
+with col2:
+    if st.button("📕 Natural Language Processing (NLP)", use_container_width=True):
+        st.session_state.input_text = get_nlp_text()
+with col3:
+    if st.button("📗 Text-to-Speech", use_container_width=True):
+        st.session_state.input_text = get_tts_text()
 
 voice_key = st.selectbox("Pilih Voice", options=list(CHOICES.keys()), index=0)
 voice = CHOICES[voice_key]
