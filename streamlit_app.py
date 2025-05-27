@@ -1,10 +1,15 @@
+import os
+
+os.system('pip install --upgrade pip; ')
+os.system('pip install -q kokoro>=0.9.2 soundfile;')
+os.system('apt-get -qq -y install espeak-ng > /dev/null 2>&1')
+
 import streamlit as st
 from kokoro import KModel, KPipeline
 import torch
 import soundfile as sf
 import tempfile
 import random
-import os
 
 # Inisialisasi
 CHAR_LIMIT = 5000
