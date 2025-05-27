@@ -102,7 +102,7 @@ st.session_state.input_text = st.text_area(
     key="main_text_input"
 )
 
-st.info('Untuk saat ini bahasa yang tersedia hanya American English dan British')
+st.info('Untuk saat ini bahasa yang tersedia hanya American dan British English')
 
 col1, col2, col3 = st.columns(3)
 with col1:
